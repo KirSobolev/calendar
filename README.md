@@ -81,3 +81,10 @@ uses only static files and browser-side JavaScript. No backend is required.
 
 The embedded `calendar_features.js` copy lets the page work when opened directly
 from disk. The CSV remains alongside it as the auditable data artifact.
+
+After rebuilding `data/processed/calendar_features_2025-01-01_2026-12-31.csv`,
+refresh the static site data files with:
+
+```powershell
+node scripts/build_static_site_data.js
+```

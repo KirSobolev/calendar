@@ -11,8 +11,8 @@ const detailDateFormat = new Intl.DateTimeFormat("en", {
 const state = {
   rows: [],
   byDate: new Map(),
-  currentMonth: new Date(2025, 7, 1),
-  selectedDate: "2025-08-07",
+  currentMonth: new Date(2025, 9, 1),
+  selectedDate: "2025-10-13",
   filters: {
     publicHolidays: true,
     schoolHolidays: true,
@@ -26,6 +26,7 @@ const elements = {
   monthIntensity: document.querySelector("#monthIntensity"),
   monthPublicHolidays: document.querySelector("#monthPublicHolidays"),
   monthPeakDate: document.querySelector("#monthPeakDate"),
+  rowsLoaded: document.querySelector("#rowsLoaded"),
   previousMonth: document.querySelector("#previousMonth"),
   nextMonth: document.querySelector("#nextMonth"),
   showPublicHolidays: document.querySelector("#showPublicHolidays"),
@@ -37,6 +38,10 @@ const elements = {
 };
 
 function parseCsv(text) {
+  if (typeof text !== "string") {
+    throw new Error("Calendar data was not loaded as CSV text.");
+  }
+
   const rows = [];
   let field = "";
   let row = [];
@@ -162,7 +167,7 @@ function dayLabels(row) {
 
   if (state.filters.schoolHolidays && row.is_school_holiday_anywhere) {
     labels.push(
-      `<span class="pill school">${row.school_holiday_municipality_count} cities · ${percent(row.school_holiday_population_weight)}</span>`,
+      `<span class="pill school">${row.school_holiday_municipality_count} cities / ${percent(row.school_holiday_population_weight)}</span>`,
     );
   }
 
@@ -199,9 +204,10 @@ function updateSummary() {
 
   elements.monthIntensity.textContent = percent(intensity / Math.max(rows.length, 1));
   elements.monthPublicHolidays.textContent = String(publicHolidays);
+  elements.rowsLoaded.textContent = String(state.rows.length);
   elements.monthPeakDate.textContent =
     peak && peak.school_holiday_population_weight > 0
-      ? `${peak.date.slice(5)} · ${percent(peak.school_holiday_population_weight)}`
+      ? `${peak.date.slice(5)} / ${percent(peak.school_holiday_population_weight)}`
       : "-";
 }
 
@@ -340,7 +346,10 @@ function wireControls() {
 
 async function init() {
   wireControls();
-  let csvText = window.CALENDAR_FEATURES_CSV;
+  let csvText =
+    typeof window.CALENDAR_FEATURES_CSV === "string"
+      ? window.CALENDAR_FEATURES_CSV
+      : window.CALENDAR_FEATURES_CSV?.value;
 
   if (!csvText) {
     const response = await fetch(DATA_URL);
