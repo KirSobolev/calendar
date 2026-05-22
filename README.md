@@ -31,6 +31,7 @@ API.
 The OPH school-term articles have been curated into:
 
 - `data/raw/oph_school_terms_2023_2024.csv`
+- `data/raw/oph_school_terms_2024_2025.csv`
 - `data/raw/oph_school_terms_2025_2026.csv`
 
 Municipality populations are kept separately in:

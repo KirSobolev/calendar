@@ -13,6 +13,7 @@ from pathlib import Path
 
 DEFAULT_INPUTS = [
     Path("data/raw/oph_school_terms_2023_2024.csv"),
+    Path("data/raw/oph_school_terms_2024_2025.csv"),
     Path("data/raw/oph_school_terms_2025_2026.csv"),
 ]
 DEFAULT_POPULATION_INPUT = Path("data/raw/municipality_population_2024.csv")
