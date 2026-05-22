@@ -7,11 +7,11 @@ import csv
 from pathlib import Path
 
 
-DEFAULT_PUBLIC_HOLIDAYS = Path("data/raw/holiday_calendar_fi_2025-01-01_2026-12-31.csv")
+DEFAULT_PUBLIC_HOLIDAYS = Path("data/raw/holiday_calendar_fi_2023-01-01_2026-12-31.csv")
 DEFAULT_SCHOOL_HOLIDAYS = Path(
-    "data/processed/school_holiday_features_2025-01-01_2026-12-31.csv"
+    "data/processed/school_holiday_features_2023-01-01_2026-12-31.csv"
 )
-DEFAULT_OUTPUT = Path("data/processed/calendar_features_2025-01-01_2026-12-31.csv")
+DEFAULT_OUTPUT = Path("data/processed/calendar_features_2023-01-01_2026-12-31.csv")
 
 
 def read_csv_by_date(path: Path) -> dict[str, dict[str, str]]:

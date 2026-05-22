@@ -11,9 +11,12 @@ from datetime import date, datetime, timedelta
 from pathlib import Path
 
 
-DEFAULT_INPUT = Path("data/raw/oph_school_terms_2025_2026.csv")
+DEFAULT_INPUTS = [
+    Path("data/raw/oph_school_terms_2023_2024.csv"),
+    Path("data/raw/oph_school_terms_2025_2026.csv"),
+]
 DEFAULT_POPULATION_INPUT = Path("data/raw/municipality_population_2024.csv")
-DEFAULT_START = "2025-01-01"
+DEFAULT_START = "2023-01-01"
 DEFAULT_END = "2026-12-31"
 DEFAULT_OUTPUT_DIR = Path("data/processed")
 
@@ -96,9 +99,14 @@ def date_range(start: date, end: date) -> list[date]:
     return [start + timedelta(days=offset) for offset in range(days + 1)]
 
 
-def read_school_terms(path: Path) -> list[dict[str, str]]:
-    with path.open(newline="", encoding="utf-8") as input_file:
-        return list(csv.DictReader(input_file))
+def read_school_terms(paths: list[Path]) -> list[dict[str, str]]:
+    rows: list[dict[str, str]] = []
+
+    for path in paths:
+        with path.open(newline="", encoding="utf-8") as input_file:
+            rows.extend(csv.DictReader(input_file))
+
+    return rows
 
 
 def read_population_weights(path: Path) -> dict[str, dict[str, float | int]]:
@@ -315,7 +323,13 @@ def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         description="Build date-level school holiday features from curated OPH school terms."
     )
-    parser.add_argument("--input", type=Path, default=DEFAULT_INPUT)
+    parser.add_argument(
+        "--input",
+        type=Path,
+        nargs="+",
+        default=DEFAULT_INPUTS,
+        help="One or more curated OPH school-term CSV files.",
+    )
     parser.add_argument("--population-input", type=Path, default=DEFAULT_POPULATION_INPUT)
     parser.add_argument("--start", type=parse_date, default=parse_date(DEFAULT_START))
     parser.add_argument("--end", type=parse_date, default=parse_date(DEFAULT_END))
@@ -336,14 +350,16 @@ def main() -> int:
     daily_features = build_daily_features(break_rows, event_rows, args.start, args.end)
 
     suffix = f"{args.start.isoformat()}_{args.end.isoformat()}"
-    write_csv(break_rows, args.output_dir / "school_holiday_municipality_dates_2025_2026.csv")
-    write_csv(event_rows, args.output_dir / "school_term_events_2025_2026.csv")
+    write_csv(break_rows, args.output_dir / f"school_holiday_municipality_dates_{suffix}.csv")
+    write_csv(event_rows, args.output_dir / f"school_term_events_{suffix}.csv")
     write_csv(daily_features, args.output_dir / f"school_holiday_features_{suffix}.csv")
     write_json(daily_features, args.output_dir / f"school_holiday_features_{suffix}.json")
 
     holiday_dates = sum(row.is_school_holiday_anywhere for row in daily_features)
+    unique_municipality_count = len({row["municipality"] for row in school_terms})
     print(
-        f"Processed {len(school_terms)} municipalities. "
+        f"Processed {len(school_terms)} school-term rows across "
+        f"{unique_municipality_count} municipalities. "
         f"Expanded {len(break_rows)} municipality-holiday date rows. "
         f"Built {len(daily_features)} daily feature rows, with {holiday_dates} dates "
         "covered by at least one school holiday."

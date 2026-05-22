@@ -4,12 +4,12 @@ const path = require("node:path");
 const source = path.join(
   "data",
   "processed",
-  "calendar_features_2025-01-01_2026-12-31.csv",
+  "calendar_features_2023-01-01_2026-12-31.csv",
 );
 const docsDataDir = path.join("docs", "data");
 const csvTarget = path.join(
   docsDataDir,
-  "calendar_features_2025-01-01_2026-12-31.csv",
+  "calendar_features_2023-01-01_2026-12-31.csv",
 );
 const jsTarget = path.join(docsDataDir, "calendar_features.js");
 

@@ -22,7 +22,7 @@ from urllib.request import Request, urlopen
 
 
 API_URL = "https://holiday-calendar.fi/api/calendar"
-DEFAULT_START = "2025-01-01"
+DEFAULT_START = "2023-01-01"
 DEFAULT_END = "2026-12-31"
 DEFAULT_OUTPUT_DIR = Path("data/raw")
 USER_AGENT = "helsinki-vantaa-calendar-research/0.1"

@@ -1,4 +1,4 @@
-const DATA_URL = "data/calendar_features_2025-01-01_2026-12-31.csv";
+const DATA_URL = "data/calendar_features_2023-01-01_2026-12-31.csv";
 
 const monthNames = new Intl.DateTimeFormat("en", { month: "long", year: "numeric" });
 const detailDateFormat = new Intl.DateTimeFormat("en", {
@@ -11,8 +11,8 @@ const detailDateFormat = new Intl.DateTimeFormat("en", {
 const state = {
   rows: [],
   byDate: new Map(),
-  currentMonth: new Date(2025, 9, 1),
-  selectedDate: "2025-10-13",
+  currentMonth: new Date(2023, 9, 1),
+  selectedDate: "2023-10-16",
   filters: {
     publicHolidays: true,
     schoolHolidays: true,
